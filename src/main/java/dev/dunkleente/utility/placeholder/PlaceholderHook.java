@@ -1,6 +1,7 @@
 package dev.dunkleente.utility.placeholder;
 
-import dev.dunkleente.mctiers.PlayerTier;
+import dev.dunkleente.mctiers.enums.GameMode;
+import dev.dunkleente.mctiers.enums.PlayerTier;
 import dev.dunkleente.mctiers.cache.TierCache;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
@@ -32,11 +33,15 @@ public class PlaceholderHook extends PlaceholderExpansion {
 
     @Override
     public @Nullable String onPlaceholderRequest(final @NotNull Player player, final @NotNull String params) {
-        if (params.equalsIgnoreCase("tier")) {
-                final var tierlistPlayer = TierCache.getPlayer(player.getUniqueId());
-                if (tierlistPlayer == null) return PlayerTier.UNRANKED.asString();
 
-                return tierlistPlayer.tier().asString();
+        for (final GameMode mode : GameMode.values()) {
+            if (params.equalsIgnoreCase("tier_" + mode.getApiKey())) {
+                final var tierlistPlayer = TierCache.getPlayer(player.getUniqueId());
+                if (tierlistPlayer == null) return mode.getIcon() + " " + PlayerTier.UNRANKED.asString();
+
+                final PlayerTier tier = tierlistPlayer.getTier(mode);
+                return mode.getIcon() + " " + tier.asString();
+            }
         }
 
         return null;

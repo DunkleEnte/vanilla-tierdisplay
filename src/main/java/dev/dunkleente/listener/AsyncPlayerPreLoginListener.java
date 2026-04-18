@@ -29,7 +29,7 @@ public class AsyncPlayerPreLoginListener implements Listener {
                 .thenAccept(player -> {
                     if (player == null) return;
 
-                    TierCache.addPlayer(uuid, player.tier());
+                    TierCache.addPlayer(player);
                 });
     }
 }

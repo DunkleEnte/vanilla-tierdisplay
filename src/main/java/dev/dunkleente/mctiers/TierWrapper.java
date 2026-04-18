@@ -1,22 +1,32 @@
 package dev.dunkleente.mctiers;
 
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import lombok.Getter;
+import dev.dunkleente.mctiers.enums.GameMode;
+import dev.dunkleente.mctiers.enums.PlayerTier;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-@Getter
+/**
+ * TierWrapper
+ *
+ * @author DunkleEnte
+ * @since 17.04.2026
+ */
 public final class TierWrapper {
 
     private static final HttpClient CLIENT = HttpClient.newHttpClient();
     private static final String BASE_URL = "https://mctiers.com/api/v2/profile/";
-    private static final String MODE = "vanilla";
+
+    private TierWrapper() {}
 
     public static @NotNull CompletableFuture<TierlistPlayer> fetch(final @NotNull UUID uuid) {
         final HttpRequest request = HttpRequest.newBuilder()
@@ -26,24 +36,44 @@ public final class TierWrapper {
 
         return CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(response -> {
+                    final Map<GameMode, PlayerTier> result = new EnumMap<>(GameMode.class);
+
                     if (response.statusCode() == 200) {
                         try {
-                            final var root = JsonParser.parseString(response.body()).getAsJsonObject();
+                            final JsonObject root = JsonParser.parseString(response.body()).getAsJsonObject();
 
-                            if (!root.has(MODE)) {
-                                return new TierlistPlayer(uuid, PlayerTier.UNRANKED);
+                            for (final GameMode mode : GameMode.values()) {
+                                if (!root.has(mode.getApiKey())) {
+                                    result.put(mode, PlayerTier.UNRANKED);
+                                    continue;
+                                }
+
+                                final JsonObject data = root.getAsJsonObject(mode.getApiKey());
+                                final int mapped = PlayerTier.wrap(
+                                        data.get("tier").getAsInt(),
+                                        data.get("pos").getAsInt()
+                                );
+                                result.put(mode, PlayerTier.from(mapped));
                             }
-
-                            final var data = root.getAsJsonObject(MODE);
-                            final PlayerTier mapped = PlayerTier.from(PlayerTier.wrap(data.get("tier").getAsInt(), data.get("pos").getAsInt()));
-
-                            return new TierlistPlayer(uuid, mapped);
                         } catch (final Exception e) {
-                            return new TierlistPlayer(uuid, PlayerTier.UNRANKED);
+                            fillUnranked(result);
                         }
+                    } else {
+                        fillUnranked(result);
                     }
-                    return new TierlistPlayer(uuid, PlayerTier.UNRANKED);
+
+                    return new TierlistPlayer(uuid, result);
                 })
-                .exceptionally(throwable -> new TierlistPlayer(uuid, PlayerTier.UNRANKED));
+                .exceptionally(throwable -> {
+                    final Map<GameMode, PlayerTier> fallback = new EnumMap<>(GameMode.class);
+                    fillUnranked(fallback);
+                    return new TierlistPlayer(uuid, fallback);
+                });
+    }
+
+    private static void fillUnranked(final @NotNull Map<GameMode, PlayerTier> map) {
+        for (final GameMode mode : GameMode.values()) {
+            map.put(mode, PlayerTier.UNRANKED);
+        }
     }
 }

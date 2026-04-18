@@ -1,9 +1,7 @@
-package dev.dunkleente.mctiers;
+package dev.dunkleente.mctiers.enums;
 
-import dev.dunkleente.utility.ColorUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -12,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
  * @author DunkleEnte
  * @since 17.04.2026
  */
-
 @Getter
 @RequiredArgsConstructor
 public enum PlayerTier {
