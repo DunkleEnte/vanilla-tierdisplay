@@ -1,5 +1,6 @@
 package dev.dunkleente;
 
+import dev.dunkleente.command.impl.SubTierCommand;
 import dev.dunkleente.command.impl.TierCommand;
 import dev.dunkleente.command.impl.TierStatsCommand;
 import dev.dunkleente.listener.AsyncPlayerPreLoginListener;
@@ -31,6 +32,8 @@ public final class Economy extends JavaPlugin {
 
         new TierCommand();
         new TierStatsCommand();
+
+        new SubTierCommand();
 
         InventoryManager.register(this);
     }

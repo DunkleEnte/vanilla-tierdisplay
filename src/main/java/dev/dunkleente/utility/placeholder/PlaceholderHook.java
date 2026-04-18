@@ -3,6 +3,8 @@ package dev.dunkleente.utility.placeholder;
 import dev.dunkleente.mctiers.enums.GameMode;
 import dev.dunkleente.mctiers.enums.PlayerTier;
 import dev.dunkleente.mctiers.cache.TierCache;
+import dev.dunkleente.subtiers.cache.SubTierCache;
+import dev.dunkleente.subtiers.enums.SubTierMode;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +32,8 @@ public class PlaceholderHook extends PlaceholderExpansion {
     public @NotNull String getVersion() {
         return "1.0.0";
     }
+    @Override
+    public boolean persist() { return true; }
 
     @Override
     public @Nullable String onPlaceholderRequest(final @NotNull Player player, final @NotNull String params) {
@@ -37,6 +41,16 @@ public class PlaceholderHook extends PlaceholderExpansion {
         for (final GameMode mode : GameMode.values()) {
             if (params.equalsIgnoreCase("tier_" + mode.getApiKey())) {
                 final var tierlistPlayer = TierCache.getPlayer(player.getUniqueId());
+                if (tierlistPlayer == null) return mode.getIcon() + " " + PlayerTier.UNRANKED.asString();
+
+                final PlayerTier tier = tierlistPlayer.getTier(mode);
+                return mode.getIcon() + " " + tier.asString();
+            }
+        }
+
+        for (final SubTierMode mode : SubTierMode.values()) {
+            if (params.equalsIgnoreCase("subtier_" + mode.getApiKey())) {
+                final var tierlistPlayer = SubTierCache.getPlayer(player.getUniqueId());
                 if (tierlistPlayer == null) return mode.getIcon() + " " + PlayerTier.UNRANKED.asString();
 
                 final PlayerTier tier = tierlistPlayer.getTier(mode);

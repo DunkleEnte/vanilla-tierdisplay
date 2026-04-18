@@ -24,13 +24,13 @@ public enum GameMode {
     MACE("mace", "Mace", "<#BFADFF>\uD83D\uDEE1");
 
     private final @NotNull String apiKey;
-    private final @NotNull String displayName;
+    private final @NotNull String name;
     private final @NotNull String icon;
 
     @Nullable
     public static GameMode fromString(final @NotNull String input) {
         for (final GameMode mode : values()) {
-            if (mode.apiKey.equalsIgnoreCase(input) || mode.displayName.equalsIgnoreCase(input)) {
+            if (mode.apiKey.equalsIgnoreCase(input) || mode.name.equalsIgnoreCase(input)) {
                 return mode;
             }
         }
