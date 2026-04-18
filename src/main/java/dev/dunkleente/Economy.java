@@ -1,8 +1,10 @@
 package dev.dunkleente;
 
 import dev.dunkleente.command.impl.TierCommand;
+import dev.dunkleente.command.impl.TierStatsCommand;
 import dev.dunkleente.listener.AsyncPlayerPreLoginListener;
 import dev.dunkleente.listener.PlayerQuitListener;
+import dev.dunkleente.utility.inventory.InventoryManager;
 import dev.dunkleente.utility.placeholder.PlaceholderHook;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -28,6 +30,9 @@ public final class Economy extends JavaPlugin {
         new AsyncPlayerPreLoginListener();
 
         new TierCommand();
+        new TierStatsCommand();
+
+        InventoryManager.register(this);
     }
 
     @Override
