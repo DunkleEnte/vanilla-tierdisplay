@@ -27,10 +27,6 @@ public enum GameMode {
     private final @NotNull String displayName;
     private final @NotNull String icon;
 
-    @NotNull
-    public String asString() {
-        return this.icon;
-    }
     @Nullable
     public static GameMode fromString(final @NotNull String input) {
         for (final GameMode mode : values()) {

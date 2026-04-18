@@ -65,14 +65,14 @@ public final class TierCommand extends BukkitCommand {
         final var cached = TierCache.getPlayer(target.getUniqueId());
 
         if (cached != null) {
-            player.sendActionBar(ColorUtil.parse("<#FFEE00><b>TIER</b> <dark_gray>▶ <#FFEE00>" + target.getName() + "'s <white>" + mode.getDisplayName() + " Tier is " + cached.getTier(mode).asString()));
+            player.sendActionBar(ColorUtil.parse("<#FFEE00><b>TIER</b> <dark_gray>▶ <#FFEE00>" + target.getName() + "'s <white>Tier is " + mode.getIcon() + " " + cached.getTier(mode).asString()));
             player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
         } else {
             TierWrapper.fetch(target.getUniqueId()).thenAccept(tierPlayer -> {
                 TierCache.addPlayer(tierPlayer);
 
                 Bukkit.getScheduler().runTask(Economy.getInstance(), () -> {
-                    player.sendActionBar(ColorUtil.parse("<#FFEE00><b>TIER</b> <dark_gray>▶ <#FFEE00>" + target.getName() + "'s <white>Tier is " + tierPlayer.getTier(mode).asString()));
+                    player.sendActionBar(ColorUtil.parse("<#FFEE00><b>TIER</b> <dark_gray>▶ <#FFEE00>" + target.getName() + "'s <white>Tier is " + mode.getIcon() + " " + tierPlayer.getTier(mode).asString()));
                     player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
                 });
             });
