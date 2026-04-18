@@ -1,0 +1,6 @@
+name: vanilla-tierdisplay
+version: 1.0.0
+main: dev.dunkleente.Economy
+api-version: 1.21
+author: DunkleEnte
+soft-depend: [PlaceholderAPI]
