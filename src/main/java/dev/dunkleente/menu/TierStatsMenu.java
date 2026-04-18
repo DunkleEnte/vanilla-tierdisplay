@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 public class TierStatsMenu extends InventoryBuilder {
 
     public TierStatsMenu(final @NotNull Player player, final @NotNull Player target) {
-        super(36, Component.text(target.getName() + "'s Tier Statistics"), true);
+        super(36, Component.text(target.getName() + "'s Tier Stats"), true);
 
         final TierlistPlayer tierlistPlayer = TierCache.getPlayer(target.getUniqueId());
 
